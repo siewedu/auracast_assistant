@@ -1,4 +1,5 @@
 import 'package:auracast_assistant/auracast_assistant/auracast_assistant.dart';
+import 'package:auracast_assistant/auracast_assistant/source.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -10,26 +11,44 @@ class SourceScanPage extends StatelessWidget {
     final assistant = context.watch<AuracastAssistant>();
     final scanning = assistant.scanning;
     return Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(Icons.cancel),
-            onPressed: () => assistant.connectedReceiver?.disconnect(),
-          ),
-          centerTitle: true,
-          title:
-              Text(assistant.connectedReceiver?.advertisementData.name ?? ''),
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.cancel),
+          onPressed: () => assistant.connectedReceiver?.disconnect(),
         ),
-        body: ListView.separated(
-            itemBuilder: (context, index) => ListTile(
-                  title: Text(assistant.sources[index].name),
-                ),
-            separatorBuilder: (context, index) => const Divider(),
-            itemCount: assistant.sources.length),
-        floatingActionButton: FloatingActionButton(
-          onPressed: scanning ? null : assistant.scanForReceivers,
-          child: scanning
-              ? const CircularProgressIndicator()
-              : const Icon(Icons.search),
-        ));
+        centerTitle: true,
+        title: Text(assistant.connectedReceiver?.advertisementData.name ?? ''),
+      ),
+      body: ListView.separated(
+        itemBuilder: (context, index) => ListTile(
+          title: Row(
+            children: [
+              Text(assistant.sources[index].name),
+              const Spacer(),
+              Text(assistant.sources[index].state),
+            ],
+          ),
+          onTap: () {
+            assistant.sources[index].synced
+                ? assistant.unSyncSource(assistant.sources[index])
+                : assistant.syncSource(assistant.sources[index]);
+          },
+        ),
+        separatorBuilder: (context, index) => const Divider(),
+        itemCount: assistant.sources.length,
+      ),
+    );
+  }
+}
+
+extension on AuracastSource {
+  String get state {
+    if (playing) {
+      return 'playing';
+    }
+    if (synced) {
+      return 'synced';
+    }
+    return '';
   }
 }

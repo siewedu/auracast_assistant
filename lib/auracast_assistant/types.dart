@@ -106,12 +106,15 @@ class BigSubgroup extends Equatable {
   static final bisSyncNoPreference =
       Uint8List.fromList([0xFF, 0xFF, 0xFF, 0xFF]);
 
+  /// Unsyncs all streams
+  static final bisSyncUnsyncAll = Uint8List.fromList([0x00, 0x00, 0x00, 0x00]);
+
   final int index;
   // Broadcast Isochronous Stream Synchronization Information. It's a bitfield
   // containing the sync state of the possible streams of this subgroup.
   // See bass spec for details.
-  final Uint8List bisSync;
-  final Uint8List? metaData;
+  Uint8List bisSync;
+  Uint8List? metaData;
 
   int get length => 5 + (metaData?.length ?? 0);
   bool get synced {

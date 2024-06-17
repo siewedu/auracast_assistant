@@ -96,10 +96,17 @@ class AuracastAssistant with ChangeNotifier {
     });
   }
 
+  void syncSource(AuracastSource source) =>
+      _selectedReceiver?.syncSource(source.broadcastId);
+
+  void unSyncSource(AuracastSource source) =>
+      _selectedReceiver?.unSyncSource(source.broadcastId);
+
   void _addReceiver(DiscoveredDevice device) {
     if (!_receieverIds.contains(device.id)) {
       _receivers.add(Receiver(device, _blePlugin));
-      print('receiever found ${device.name} ${device.id}');
+      print(
+          'receiever found ${device.name} ${device.id} with services ${device.serviceData.keys}');
     }
     notifyListeners();
   }
