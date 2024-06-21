@@ -69,16 +69,19 @@ class Receiver {
     print('${sync ? 'sync' : 'unsync'} broadcast Id $broadcastId');
     print('write char ${_scanControlPointCharacteristics?.id}');
     print('subgroups ${_receiveStates.value[index].source?.subgroups.length}');
+    final subgroups = _receiveStates.value[index].source?.subgroups.map((sg) {
+          sg.bisSync = sync
+              ? BigSubgroup.bisSyncNoPreference
+              : BigSubgroup.bisSyncUnsyncAll;
+          return sg;
+        }).toList() ??
+        [];
     final bytes = ModifySourceOperation(
       sourceId: _receiveStates.value[index].sourceId!,
       paSync: sync ? PaSync.syncWithoutPast : PaSync.noSync,
-      subgroups: _receiveStates.value[index].source?.subgroups.map((sg) {
-            sg.bisSync = sync
-                ? BigSubgroup.bisSyncNoPreference
-                : BigSubgroup.bisSyncUnsyncAll;
-            return sg;
-          }).toList() ??
-          [],
+      subgroups: subgroups.isEmpty
+          ? [BigSubgroup(index: 0, bisSync: BigSubgroup.bisSyncNoPreference)]
+          : subgroups,
     ).serialize();
     print('operation ${bytes.asMap()}');
     _scanControlPointCharacteristics?.write(bytes);
