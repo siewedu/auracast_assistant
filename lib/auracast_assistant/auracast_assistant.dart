@@ -74,6 +74,7 @@ class AuracastAssistant with ChangeNotifier {
   void connectReceiver(Receiver receiver) {
     if (_selectedReceiver?.advertisementData.id == receiver.id &&
         _selectedReceiver?.connected == true) {
+      // Already connected to this receiver
       return;
     }
 
