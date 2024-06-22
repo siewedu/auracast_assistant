@@ -43,15 +43,11 @@ class AuracastAssistant with ChangeNotifier {
         return receiver;
       }).toList();
       notifyListeners();
-      print(
-          'receiever ${update.deviceId} state updated ${update.connectionState}');
     });
   }
 
   /// Scans for devices that implement the broadcastAudioScanService
   Future<void> scanForReceivers() {
-    print(
-        'scan for receivers with bass service uuid ${BleUuid.broadcastAudioScanService.expanded}');
     _scanCompleter = Completer<void>();
     _receivers.clear();
     _scanSubscription = _blePlugin
@@ -78,16 +74,13 @@ class AuracastAssistant with ChangeNotifier {
   void connectReceiver(Receiver receiver) {
     if (_selectedReceiver?.advertisementData.id == receiver.id &&
         _selectedReceiver?.connected == true) {
-      print('Already connected to receiver ${receiver.advertisementData.name}');
       return;
     }
 
     connectedReceiver?.disconnect();
-    print('Connect to receiver ${receiver.advertisementData.name}');
     _selectedReceiver = receiver..connect();
     _receieveStateSubscription =
         _selectedReceiver?.receiveStates.listen((receiveStates) {
-      print('ReceiveStates updated');
       _sources = receiveStates
           .where((state) => state.source != null)
           .map((state) => AuracastSource.fromReceiveState(state))
@@ -105,8 +98,6 @@ class AuracastAssistant with ChangeNotifier {
   void _addReceiver(DiscoveredDevice device) {
     if (!_receieverIds.contains(device.id)) {
       _receivers.add(Receiver(device, _blePlugin));
-      print(
-          'receiever found ${device.name} ${device.id} with services ${device.serviceData.keys}');
     }
     notifyListeners();
   }

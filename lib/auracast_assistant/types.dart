@@ -3,8 +3,6 @@
 
 import 'dart:typed_data';
 
-import 'package:equatable/equatable.dart';
-
 enum AddressType {
   public(0),
   random(1);
@@ -84,7 +82,7 @@ enum BigEncryption {
 }
 
 /// Broadcast Isochronouse Group.
-class BigSubgroup extends Equatable {
+class BigSubgroup {
   BigSubgroup({required this.index, Uint8List? bisSync, this.metaData})
       : bisSync = bisSync ?? bisSyncNoPreference;
 
@@ -132,7 +130,4 @@ class BigSubgroup extends Equatable {
 
     return Uint8List.fromList(bytes);
   }
-
-  @override
-  List<Object?> get props => [index, bisSync, metaData];
 }

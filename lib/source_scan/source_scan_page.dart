@@ -9,7 +9,6 @@ class SourceScanPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final assistant = context.watch<AuracastAssistant>();
-    final scanning = assistant.scanning;
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(

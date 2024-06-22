@@ -35,7 +35,6 @@ class Receiver {
         id: id, connectionTimeout: const Duration(seconds: 10));
 
     _connectionSubscription = stream.listen((update) {
-      print('connection state update for $id ${update.connectionState}');
       connectionState = update.connectionState;
       if (update.connectionState == DeviceConnectionState.connected) {
         _init();
@@ -63,12 +62,8 @@ class Receiver {
     final index = _receiveStates.value
         .indexWhere((state) => state.source?.broadcastId == broadcastId);
     if (index == -1) {
-      print('No source found with broadcast id $broadcastId');
       return;
     }
-    print('${sync ? 'sync' : 'unsync'} broadcast Id $broadcastId');
-    print('write char ${_scanControlPointCharacteristics?.id}');
-    print('subgroups ${_receiveStates.value[index].source?.subgroups.length}');
     final subgroups = _receiveStates.value[index].source?.subgroups.map((sg) {
           sg.bisSync = sync
               ? BigSubgroup.bisSyncNoPreference
@@ -83,7 +78,6 @@ class Receiver {
           ? [BigSubgroup(index: 0, bisSync: BigSubgroup.bisSyncNoPreference)]
           : subgroups,
     ).serialize();
-    print('operation ${bytes.asMap()}');
     _scanControlPointCharacteristics?.write(bytes);
   }
 
@@ -95,15 +89,11 @@ class Receiver {
   Future<void> _discoverServices() async {
     await _blePlugin.discoverAllServices(id);
     _services = await _blePlugin.getDiscoveredServices(id);
-    for (var service in _services) {
-      print('Discovered service: ${service.id}');
-    }
   }
 
   Future<void> subscribeReceiveStates() async {
     final bassService = _services.firstWhereOrNull((service) =>
         service.id.expanded == BleUuid.broadcastAudioScanService.expanded);
-    print('Discovered bass service: ${bassService?.id}');
     _scanControlPointCharacteristics = bassService?.characteristics
         .firstWhereOrNull((char) =>
             char.id.expanded ==
@@ -115,13 +105,10 @@ class Receiver {
         [];
 
     if (_receiveStateCharacteristics.isEmpty) {
-      print('No receive state characteristics found for $id');
       return;
     }
 
     final receiveStates = <ReceiveState>[];
-
-    print('discovered ${_receiveStateCharacteristics.length} receive states');
 
     for (final (index, char) in _receiveStateCharacteristics.indexed) {
       final data = await char.read();
@@ -133,7 +120,6 @@ class Receiver {
         _receiveStates.add(states);
       });
     }
-    print('Subscribed to ${receiveStates.length} receive states');
     _receiveStates.add(receiveStates);
   }
 }
