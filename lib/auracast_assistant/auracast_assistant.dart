@@ -50,18 +50,15 @@ class AuracastAssistant with ChangeNotifier {
   Future<void> scanForReceivers() {
     _scanCompleter = Completer<void>();
     _receivers.clear();
-    _scanSubscription = _blePlugin
-        .scanForDevices(
-          withServices: [],
-          scanMode: ScanMode.lowLatency,
-          requireLocationServicesEnabled: false,
-        )
-        .where((device) => device.hasName && device.isAuracastReceiver)
-        .listen(
-          _addReceiver,
-          onDone: _onScanDone,
-          onError: _onScanError,
-        );
+    _scanSubscription = _blePlugin.scanForDevices(
+      withServices: [BleUuid.sennheiserService],
+      scanMode: ScanMode.lowLatency,
+      requireLocationServicesEnabled: false,
+    ).listen(
+      _addReceiver,
+      onDone: _onScanDone,
+      onError: _onScanError,
+    );
 
     Timer(const Duration(seconds: 5), _onScanDone);
     notifyListeners();
@@ -127,10 +124,4 @@ class AuracastAssistant with ChangeNotifier {
     _selectedReceiver?.disconnect();
     super.dispose();
   }
-}
-
-extension on DiscoveredDevice {
-  bool get hasName => name.isNotEmpty;
-  bool get isAuracastReceiver =>
-      serviceData.keys.contains(BleUuid.broadcastAudioScanService.expanded);
 }
