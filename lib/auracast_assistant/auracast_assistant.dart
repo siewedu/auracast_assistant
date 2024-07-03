@@ -51,7 +51,7 @@ class AuracastAssistant with ChangeNotifier {
     _scanCompleter = Completer<void>();
     _receivers.clear();
     _scanSubscription = _blePlugin.scanForDevices(
-      withServices: [BleUuid.sennheiserService],
+      withServices: [],
       scanMode: ScanMode.lowLatency,
       requireLocationServicesEnabled: false,
     ).listen(

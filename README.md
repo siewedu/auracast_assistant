@@ -5,18 +5,7 @@ The implementation follows the conecpt described in this document https://www.bl
 
 ## Getting Started
 
-Start the app and tap on the lens icon to scan for receivers. You might want to afjust the scan filter since currenlty it will only return BLE devices that implemet the Sennheiser service.
-```
-_blePlugin.scanForDevices(
-      withServices: [BleUuid.sennheiserService],
-      scanMode: ScanMode.lowLatency,
-      requireLocationServicesEnabled: false,
-    ).listen(
-      _addReceiver,
-      onDone: _onScanDone,
-      onError: _onScanError,
-    );
-```
+Start the app and tap on the lens icon to scan for receivers. 
 Tap on the scan result to connect to the device. 
 The app will show the sources that are listed in the receive states. 
 Tap on a source to sync or unsync it. 
