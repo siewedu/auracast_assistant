@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:auracast_assistant/auracast_assistant/receive_state.dart';
 import 'package:auracast_assistant/auracast_assistant/receiver.dart';
 import 'package:auracast_assistant/auracast_assistant/source.dart';
-import 'package:auracast_assistant/auracast_assistant/uuids.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
