@@ -22,6 +22,7 @@ class Receiver {
   final FlutterReactiveBle _blePlugin;
   List<Service> _services = [];
   final _receiveStates = BehaviorSubject.seeded(<ReceiveState>[]);
+  final List<StreamSubscription<List<int>>> _characteristicSubscriptions = [];
   var _receiveStateCharacteristics = <Characteristic>[];
   Characteristic? _scanControlPointCharacteristics;
   StreamSubscription<ConnectionStateUpdate>? _connectionSubscription;
@@ -51,7 +52,15 @@ class Receiver {
 
   Future<void> disconnect() async {
     await _connectionSubscription?.cancel();
+    await _cancelCharacteristicsSubscriptions();
     _connectionSubscription = null;
+  }
+
+  Future<void> _cancelCharacteristicsSubscriptions() async {
+    for (final subscription in _characteristicSubscriptions) {
+      await subscription.cancel();
+    }
+    _characteristicSubscriptions.clear();
   }
 
   void syncSource(int broadcastId) => _setSync(true, broadcastId);
@@ -109,17 +118,21 @@ class Receiver {
     }
 
     final receiveStates = <ReceiveState>[];
+    await _cancelCharacteristicsSubscriptions();
 
     for (final (index, char) in _receiveStateCharacteristics.indexed) {
       final data = await char.read();
       receiveStates.add(ReceiveState.fromBytes(Uint8List.fromList(data)));
 
-      char.subscribe().listen((data) {
-        final states = _receiveStates.value;
-        states[index] = ReceiveState.fromBytes(Uint8List.fromList(data));
-        _receiveStates.add(states);
-      });
+      _characteristicSubscriptions.add(
+          char.subscribe().listen((data) => _updateReceiveState(index, data)));
     }
     _receiveStates.add(receiveStates);
+  }
+
+  void _updateReceiveState(int index, List<int> data) {
+    final states = _receiveStates.value;
+    states[index] = ReceiveState.fromBytes(Uint8List.fromList(data));
+    _receiveStates.add(states);
   }
 }
