@@ -1,6 +1,6 @@
 # auracast_assistant
 
-This is a smple application that demonstrates how to implement an Auracast assistant for phones which don't support scanning for Auracast sources. 
+This is a sample application that demonstrates how to implement an Auracast assistant for phones which don't support scanning for Auracast sources. 
 The implementation follows the conecpt described in this document https://www.bluetooth.com/wp-content/uploads/2023/03/Developing_Auracast_Receivers-Legacy_Smartphones.pdf
 
 ## Getting Started
