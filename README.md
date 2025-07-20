@@ -2,6 +2,7 @@
 
 This is a sample application that demonstrates how to implement an Auracast assistant for phones which don't support scanning for Auracast sources. 
 The implementation follows the conecpt described in this document https://www.bluetooth.com/wp-content/uploads/2023/03/Developing_Auracast_Receivers-Legacy_Smartphones.pdf
+For more background information on this auracast assisstant implementation please check my talk at the FlutterCon 2024 here https://www.droidcon.com/2024/09/03/bluetooth-le-audio-broadcast-how-to-build-an-auracast-assistant-app-with-flutter/.
 
 ## Getting Started
 
